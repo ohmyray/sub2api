@@ -1,3 +1,41 @@
+/*
+ * Package config 配置管理模块
+ *
+ * 本模块负责 Sub2API 的所有配置加载、默认值设置和校验
+ *
+ * 配置加载流程：
+ * 1. 支持多种配置源（按优先级）：
+ *    - 环境变量（最高优先级）
+ *    - DATA_DIR/config.yaml
+ *    - /app/data/config.yaml
+ *    - 当前目录 config.yaml
+ *    - ./config/config.yaml
+ *    - /etc/sub2api/config.yaml
+ *
+ * 2. 使用 Viper 库进行配置管理：
+ *    - 支持 YAML 格式配置文件
+ *    - 支持环境变量自动映射（将 . 替换为 _，如 database.host -> DATABASE_HOST）
+ *
+ * 3. 配置校验：
+ *    - LoadForBootstrap(): 启动阶段配置，允许 jwt.secret 为空
+ *    - Load(): 完整配置，要求 jwt.secret 必须提供且长度 >= 32 字节
+ *
+ * 主要配置分类：
+ * - Server: 服务器配置（端口、模式、超时）
+ * - Database: PostgreSQL 数据库连接
+ * - Redis: Redis 连接和连接池
+ * - JWT: JWT 认证密钥和过期时间
+ * - Gateway: API 网关配置（调度、限流、连接池）
+ * - Billing: 计费配置（熔断器）
+ * - Security: 安全配置（CORS、URL 白名单、TLS 指纹）
+ * - CORS: 跨域配置
+ *
+ * 运行模式：
+ * - standard: 完整功能（需要数据库和 Redis）
+ * - simple: 简易模式，跳过计费检查，适合个人使用
+ *
+ * 配置文件示例：../deploy/config.example.yaml
+ */
 // Package config provides configuration loading, defaults, and validation.
 package config
 
